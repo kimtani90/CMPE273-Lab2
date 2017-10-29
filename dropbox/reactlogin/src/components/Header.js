@@ -3,6 +3,9 @@ import { Route, withRouter } from 'react-router-dom';
 import * as API from '../api/API';
 import '../Login.css';
 import dropboxtitle from "./Dropbox_Log.png";
+import {afterlogin} from "../actions/index";
+import {getFiles} from "../actions/index";
+import {connect} from 'react-redux';
 
 
 class Header extends Component {
@@ -26,6 +29,26 @@ class Header extends Component {
             });
 
     }
+
+    home=() => {
+
+        API.getState()
+            .then((res) => {
+
+                if (res.status == 201) {
+                    this.props.afterlogin(res.userdetails);
+                    this.props.getFiles(res.userdetails.files);
+                    this.props.history.push("/files")
+                    console.log("Success...")
+
+                }else if (res.status == 401) {
+
+                    this.props.history.push('/');
+                }
+            });
+
+
+    }
     render() {
         return (
             <div>
@@ -33,7 +56,7 @@ class Header extends Component {
                     <div className="container-fluid">
                         <div className="navbar-header">
                             <img className="" src={dropboxtitle}
-                                 alt="" height="50" onClick={() => this.props.history.push("/files")}/>
+                                 alt="" height="50" onClick={() => this.home()}/>
                         </div>
                         <ul className="nav navbar-nav">
                             <div className="row">
@@ -41,7 +64,7 @@ class Header extends Component {
                                 <li className="active">Welcome <a href="#" onClick={() => this.props.history.push("/userdetails")}>
                                      {localStorage.getItem("email").split('@')[0]}</a>,</li>
                                 <div className="col-md-1" ></div>
-                                <li className="active"><a href="#" onClick={() => this.props.history.push("/files")}>
+                                <li className="active"><a href="#" onClick={() => this.home()}>
                                     Home</a></li>
 
                                 <div className="col-md-1" ></div>
@@ -58,4 +81,13 @@ class Header extends Component {
     }
 }
 
-export default withRouter(Header);
+function mapDispatchToProps(dispatch) {
+    return {
+
+        afterlogin : (data) => dispatch(afterlogin(data)),
+        getFiles : (data) => dispatch(getFiles(data))
+    };
+}
+
+
+export default withRouter(connect(null, mapDispatchToProps)(Header));

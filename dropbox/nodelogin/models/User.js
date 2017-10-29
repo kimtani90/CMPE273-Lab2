@@ -13,8 +13,8 @@ var UserSchema   = new Schema({
     email: String,
     contactno: String,
     interests: String,
-    lastlogintime: Date,
-    userlog:Array
+    lastlogintime: Date
+    //userlog:Array
 });
 
 module.exports = mongoose.model('User', UserSchema);

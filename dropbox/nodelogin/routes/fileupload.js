@@ -6,11 +6,13 @@ var mysql = require('./mysql');
 var fs = require('fs');
 var User = require('../models/User');
 var File = require('../models/Files');
+var UserLog = require('../models/UserLog');
+
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        var splitedemail = req.session.email.split('.')[0];
-        cb(null, './public/uploads/'+splitedemail)
+
+        cb(null, './public/uploads/')
     },
     filename: function (req, file, cb) {
         // cb(null, file.fieldname + '-' + Date.now() + '.jpeg')
@@ -50,13 +52,54 @@ router.get('/',  function (req, res) {
 
 });
 
+
+
+router.get('/getfiles', function (req, res) {
+
+    var email=req.session.email;
+    var filepath=req.query.filepath;
+    var files=[];
+
+
+
+    File.find( {'fileparent' : filepath} , function (err, filesArr) {
+
+        if (err) {
+            throw err;
+        }
+
+        if(!filesArr){
+            res.send({status: 401});
+        }
+        else {
+
+            files=filesArr;
+
+
+            res.send({"files": files, "status": 201});
+        }
+
+    });
+
+
+});
+
+
 router.post('/delete', function (req, res) {
-    console.log(req.session.email)
-    console.log(req.body);
+
     var filename = req.body.filename;
     var isfile = req.body.isfile;
     var filepath= req.body.filepath;
     var email=req.session.email;
+
+    var log={
+        'filename':filename,
+        'filepath':filepath,
+        'isfile':isfile,
+        'action':'Delete File',
+        'actiontime': new Date()
+    };
+
 
     File.findOne({'filepath':filepath, 'owner':email}, function(err, file){
         if(err){
@@ -87,7 +130,19 @@ router.post('/delete', function (req, res) {
                     res.send({status: 401});
                 }
                 else{
-                    res.send({"status": 204, message: "Deleted Successfully!"});
+
+                    UserLog.update({'email': req.session.email}, {$push: {userlog:log}}, function (err) {
+                        if (err) {
+                            throw err;
+
+                        }
+                        else {
+
+                            res.send({"status": 204, message: "Deleted Successfully!"});
+                        }
+
+                    });
+
                 }
 
             });
@@ -132,7 +187,6 @@ router.post('/upload', upload.single('file'), function (req, res) {
         newfile.sharedcount = 0
 
 
-
     var log={
         'filename':filename,
         'filepath':filepath,
@@ -141,6 +195,10 @@ router.post('/upload', upload.single('file'), function (req, res) {
         'actiontime': new Date()
     };
 
+
+    //copying a file to user's folder
+    fs.createReadStream('./public/uploads/'+req.file.filename).pipe(fs.createWriteStream(filepath));
+
     newfile.save(function (err) {
 
         if(err){
@@ -148,7 +206,7 @@ router.post('/upload', upload.single('file'), function (req, res) {
             res.send({"status":401});
         }
         else {
-            User.update({'email': req.session.email}, {$push: {userlog:log}}, function (err) {
+            UserLog.update({'email': req.session.email}, {$push: {userlog:log}}, function (err) {
                 if (err) {
                     throw err;
                     console.log("Error inserting last login....")
@@ -216,7 +274,7 @@ console.log(req.body)
         }
         else {
 
-            User.update({'email': req.session.email}, {$push: {userlog:log}}, function (err) {
+            UserLog.update({'email': req.session.email}, {$push: {userlog:log}}, function (err) {
                 if (err) {
                     throw err;
                     console.log("Error inserting last login....")
@@ -265,7 +323,7 @@ router.post('/sharefile', function (req, res) {
         }
         else{
 
-            User.update({'email': req.body.email}, {$push: {userlog:log}}, function (err) {
+            UserLog.update({'email': req.body.email}, {$push: {userlog:log}}, function (err) {
                 if (err) {
                     throw err;
                     console.log("Error inserting last login....")
@@ -280,7 +338,6 @@ router.post('/sharefile', function (req, res) {
     });
 
 });
-
 
 
 module.exports = router;

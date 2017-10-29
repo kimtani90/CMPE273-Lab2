@@ -63,8 +63,8 @@ class FileGridList extends Component {
                     <tbody>
 
                     {this.props.files.map((file, index) => {
-
-                        if(file.fileparent==this.props.parentFile) {
+console.log(file);
+                      //  if(file.fileparent==this.props.parentFile || (file.isfile=='T' && file.owner!= this.props.userEmail )) {
                             var downloadlink="http://localhost:3001/uploads/"+this.props.userEmail.split('.')[0]+"/"+file.filename
                             return (
                                 <tr className="justify-content-md-left">
@@ -122,7 +122,7 @@ class FileGridList extends Component {
 
                                 </tr>
                             );
-                        }
+                     //   }
                     })}
                     </tbody>
                 </table>

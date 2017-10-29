@@ -6,7 +6,7 @@ var crypto = require('crypto');
 var fs = require('fs');
 var File = require('../models/Files');
 var passport = require('passport');
-require('./passport')(passport);
+var UserLog = require('../models/UserLog');
 var bcrypt = require('bcrypt');
 
 
@@ -34,31 +34,42 @@ router.get('/', function (req, res) {
         }
         else {
 
-            File.find({ $or: [ {'owner': email}, {'sharedlist': email} ]}, function (err, filesArr) {
+            File.find( {$or: [ {'owner': email, 'fileparent':''}, {'sharedlist': email}]} , function (err, filesArr) {
 
                 if (err) {
                     throw err;
-
-
-                }
-
-                if(!user){
                     res.send({status: 401});
                 }
+
                 else {
+                    UserLog.find({'user': email}, function (err, logArr) {
 
-                    userdetails.firstname=user.firstname;
-                    userdetails.lastname=user.lastname;
-                    userdetails.email=user.email;
-                    userdetails.contactno=user.contactno;
-                    userdetails.interests=user.interests;
-                    userdetails.lastlogin=user.lastlogintime;
-                    userdetails.userlog=user.userlog;
-                    userdetails.files=filesArr;
+                        if (err) {
+                            throw err;
+                            res.send({status: 401});
+                        }
+
+                        if (!user) {
+                            res.send({status: 401});
+                        }
+                        else {
+
+                            userdetails.firstname = user.firstname;
+                            userdetails.lastname = user.lastname;
+                            userdetails.email = user.email;
+                            userdetails.contactno = user.contactno;
+                            userdetails.interests = user.interests;
+                            userdetails.lastlogin = user.lastlogintime;
+                            userdetails.userlog = logArr;
+                            userdetails.files = filesArr;
 
 
-                    res.send({"userdetails": userdetails, "status": 201});
+                            res.send({"userdetails": userdetails, "status": 201});
+                        }
+                    });
+
                 }
+
 
             });
         }
@@ -72,26 +83,24 @@ router.post('/', function (req, res) {
     var reqEmail = req.body.email;
     var reqPassword = req.body.password;
 
-    User.findOne({'email': reqEmail}, function (err, user) {
 
-   // passport.authenticate('login', function(err, user) {
+   passport.authenticate('login', function(err, user) {
 
         if (err) {
             throw err;
 
         }
 
-        if(!user || !bcrypt.compareSync(reqPassword, user.password)){
-            console.log('errorr')
+        if(!user ){
+            console.log('Could not find user')
             res.send({status: 401});
         }
         else {
 
-
             req.session.email = user.email;
             console.log(req.session.email);
 
-            user.update({lastlogintime: new Date()}, function (err) {
+            User.update({'email': user.email},{lastlogintime: new Date()}, function (err) {
                 if (err) {
                     throw err;
                     console.log("Error inserting last login....")
@@ -106,8 +115,8 @@ router.post('/', function (req, res) {
 
         }
 
+    })(req,res);
 
-    });
 });
 
 router.post('/signup', function (req, res) {
@@ -115,32 +124,47 @@ router.post('/signup', function (req, res) {
 
     var newUser = new User();
     var hash = bcrypt.hashSync(req.body.password, 10);
-console.log(hash);
-    newUser.password = hash;
 
+    newUser.password = hash;
     newUser.firstname = req.body.firstName;
     newUser.lastname = req.body.lastName;
     newUser.email = req.body.email;
+
+    var userLog = new UserLog();
+
+    userLog.user = req.body.email;
 
     console.log(req.body)
     newUser.save(function(err){
 
         if(err){
             throw err;
-            console.log(err)
+
             res.status(401).json({message: "SignUp failed"});
         }
         else {
 
-            var fs = require('fs');
-            var splitemail = req.body.email.split('.')[0];
-            var dir = './public/uploads/' + splitemail;
+            userLog.save.(function(err) {
 
-            if (!fs.existsSync(dir)) {
+                if (err) {
+                    throw err;
 
-                fs.mkdirSync(dir);
-            }
-            res.status(201).json({message: "User Details Saved successfully"});
+                    res.status(401).json({message: "SignUp failed"});
+                }
+                else {
+
+                    var fs = require('fs');
+                    var splitemail = req.body.email.split('.')[0];
+                    var dir = './public/uploads/' + splitemail;
+
+                    if (!fs.existsSync(dir)) {
+
+                        fs.mkdirSync(dir);
+                    }
+                    res.status(201).json({message: "User Details Saved successfully"});
+                }
+
+            });
         }
 
     });
@@ -151,7 +175,7 @@ console.log(hash);
 
 
 router.post('/updateuser', function (req, res) {
-console.log(req.body)
+
     var firstname = req.body.firstname;
     var lastname = req.body.lastname;
     var contact = req.body.contactno;

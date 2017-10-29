@@ -62,6 +62,17 @@ export const getState = () =>
             return error;
         });
 
+export const getFileList = (filepath) =>
+    fetch(`${api}/files/getfiles?filepath=`+filepath,{
+        method: 'GET',
+        credentials:'include'
+    })
+        .then(res => res.json())
+        .catch(error => {
+            console.log("This is error.");
+            return error;
+        });
+
 export const uploadFile = (payload) =>
     fetch(`${api}/files/upload`, {
         method: 'POST',
@@ -131,6 +142,22 @@ export const shareFile = (filedata) =>
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(filedata),
+        credentials:'include'
+    }).then(res => {
+        return res.json();
+    }).catch(error => {
+        console.log("This is error");
+        return error;
+    });
+
+export const shareFolder = (folderdata) =>
+    fetch(`${api}/files/sharefolder`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(folderdata),
         credentials:'include'
     }).then(res => {
         return res.json();

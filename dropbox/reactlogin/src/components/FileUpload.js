@@ -119,6 +119,51 @@ class FileUpload extends Component {
             });
 
     }
+/*
+
+    share=(filedata) => {
+
+        if(filedata.isfile=='T')
+            this.sharefile(filedata)
+        else
+            this.sharefolder(filedata)
+    }
+
+    sharefolder=(folderdata) => {
+
+
+        var emailList=folderdata.shareEmail.trim().split(';');
+
+        console.log(emailList)
+
+        for (var key in emailList) {
+
+            const data = {folderdata: folderdata.file, shareEmail: emailList[key]}
+
+            API.shareFolder(data)
+                .then((res) => {
+
+                    if (res.status == 201) {
+                        console.log(data)
+                        this.setState({
+
+                            message: this.state.message+" Folder Shared with "+data.shareEmail+"!"
+                        });
+                        console.log("Success...")
+
+                    } else if (res.status == 401) {
+                        console.log("here")
+                        this.setState({
+
+                            message: this.state.message+" "+data.shareEmail+" does not exist!"
+                        });
+                    }
+                });
+        }
+
+    }
+*/
+
 
     sharefile=(filedata) => {
 
@@ -187,7 +232,21 @@ class FileUpload extends Component {
         if(filedata.isfile=='F'){
 
             this.setState({
-                fileparent:filedata.filepath
+                 fileparent:filedata.filepath
+             });
+
+            API.getFileList(filedata.filepath)
+                .then((res) => {
+                if (res.status == 201) {
+
+                    this.props.getFiles(res.files);
+
+                }else if (res.status == 401) {
+
+
+                }
+
+
             });
 
         }
@@ -205,6 +264,24 @@ class FileUpload extends Component {
                 });
         }
         console.log(this.state.fileparent);
+
+    }
+
+    navigateHome(){
+
+        API.getState()
+            .then((res) => {
+
+                if (res.status == 201) {
+
+                    this.props.getFiles(res.userdetails.files);
+                    console.log("Success...")
+
+                }else if (res.status == 401) {
+
+                    this.props.history.push('/');
+                }
+            });
 
     }
 
@@ -244,10 +321,7 @@ class FileUpload extends Component {
 
                         <div className="col-sm-7 ">
                             <a href="#" className="link-title "
-                               onClick={() => this.setState({
-                                   fileparent:'',
-                                   message:''
-                               })}>
+                               onClick={() => this.navigateHome()}>
                                 Dropbox
                             </a>
                         </div>
