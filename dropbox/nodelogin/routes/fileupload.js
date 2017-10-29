@@ -74,8 +74,6 @@ router.get('/getfiles', function (req, res) {
         else {
 
             files=filesArr;
-
-
             res.send({"files": files, "status": 201});
         }
 
@@ -131,7 +129,7 @@ router.post('/delete', function (req, res) {
                 }
                 else{
 
-                    UserLog.update({'email': req.session.email}, {$push: {userlog:log}}, function (err) {
+                    UserLog.update({'user': req.session.email}, {$push: {userlog:log}}, function (err) {
                         if (err) {
                             throw err;
 
@@ -195,7 +193,7 @@ router.post('/upload', upload.single('file'), function (req, res) {
         'actiontime': new Date()
     };
 
-
+console.log(req.session.email)
     //copying a file to user's folder
     fs.createReadStream('./public/uploads/'+req.file.filename).pipe(fs.createWriteStream(filepath));
 
@@ -206,7 +204,7 @@ router.post('/upload', upload.single('file'), function (req, res) {
             res.send({"status":401});
         }
         else {
-            UserLog.update({'email': req.session.email}, {$push: {userlog:log}}, function (err) {
+            UserLog.update({'user': req.session.email}, {$push: {userlog:log}}, function (err) {
                 if (err) {
                     throw err;
                     console.log("Error inserting last login....")
@@ -274,7 +272,7 @@ console.log(req.body)
         }
         else {
 
-            UserLog.update({'email': req.session.email}, {$push: {userlog:log}}, function (err) {
+            UserLog.update({'user': req.session.email}, {$push: {userlog:log}}, function (err) {
                 if (err) {
                     throw err;
                     console.log("Error inserting last login....")
@@ -323,7 +321,7 @@ router.post('/sharefile', function (req, res) {
         }
         else{
 
-            UserLog.update({'email': req.body.email}, {$push: {userlog:log}}, function (err) {
+            UserLog.update({'user': req.body.email}, {$push: {userlog:log}}, function (err) {
                 if (err) {
                     throw err;
                     console.log("Error inserting last login....")

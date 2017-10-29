@@ -144,7 +144,7 @@ router.post('/signup', function (req, res) {
         }
         else {
 
-            userLog.save.(function(err) {
+            userLog.save(function(err) {
 
                 if (err) {
                     throw err;
