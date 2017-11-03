@@ -73,13 +73,13 @@ class FileUpload extends Component {
         API.deleteFile(file)
             .then((res) => {
 
-                if (res.status == 204) {
+                if (res.status == 201) {
 
                     console.log("Delete success")
                     this.props.deleteFile(index);
                     this.setState({
 
-                        message: "File deleted successfully"
+                        message: res.message
                     });
                 }else if (res.status == 401) {
                     this.setState({
@@ -87,12 +87,12 @@ class FileUpload extends Component {
                         message: res.message
                     });
                 }
-                else if (res.status == 402) {
+                /*else if (res.status == 402) {
                     this.setState({
 
                         message: res.message
                     });
-                }
+                }*/
             });
 
     }
@@ -102,68 +102,23 @@ class FileUpload extends Component {
         API.makeFolder(folder)
             .then((res) => {
 
-                if (res.status == 204) {
+                if (res.status == 201) {
 
                     this.props.addFile(res.folderdata);
                     this.setState({
 
-                        message: "folder created successfully"
+                        message: res.message
                     });
 
                 }else if (res.status == 401) {
                     this.setState({
 
-                        message: "Folder error"
+                        message: res.message
                     });
                 }
             });
 
     }
-/*
-
-    share=(filedata) => {
-
-        if(filedata.isfile=='T')
-            this.sharefile(filedata)
-        else
-            this.sharefolder(filedata)
-    }
-
-    sharefolder=(folderdata) => {
-
-
-        var emailList=folderdata.shareEmail.trim().split(';');
-
-        console.log(emailList)
-
-        for (var key in emailList) {
-
-            const data = {folderdata: folderdata.file, shareEmail: emailList[key]}
-
-            API.shareFolder(data)
-                .then((res) => {
-
-                    if (res.status == 201) {
-                        console.log(data)
-                        this.setState({
-
-                            message: this.state.message+" Folder Shared with "+data.shareEmail+"!"
-                        });
-                        console.log("Success...")
-
-                    } else if (res.status == 401) {
-                        console.log("here")
-                        this.setState({
-
-                            message: this.state.message+" "+data.shareEmail+" does not exist!"
-                        });
-                    }
-                });
-        }
-
-    }
-*/
-
 
     sharefile=(filedata) => {
 
@@ -274,6 +229,9 @@ class FileUpload extends Component {
 
                 if (res.status == 201) {
 
+                    this.setState({
+                        fileparent:""
+                    });
                     this.props.getFiles(res.userdetails.files);
                     console.log("Success...")
 

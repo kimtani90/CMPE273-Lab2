@@ -5,14 +5,15 @@ import PropTypes from 'prop-types';
 import dropbox from "./dropboxplus.gif";
 import {connect} from 'react-redux';
 import {Row,Col,ListGroupItem} from 'react-bootstrap';
-import {afterlogin} from "../actions/index";
+
 import { Route, withRouter } from 'react-router-dom';
 import Header from "./Header";
 
 // Import React Table
 import ReactTable from "react-table";
 import "react-table/react-table.css";
-import {getUserLog} from "../actions/index";
+import {getFileLog} from "../actions/index";
+import {getGroupLog} from "../actions/index";
 
 
 class UserLog extends Component {
@@ -24,7 +25,8 @@ class UserLog extends Component {
 
                 if (res.status == 201) {
                     console.log(res.userdetails)
-                    this.props.getUserLog(res.userdetails.userlog);
+                    this.props.getFileLog(res.userdetails.filelog);
+                    this.props.getGroupLog(res.userdetails.grouplog);
                     console.log("Success...")
 
                 }else if (res.status == 401) {
@@ -35,7 +37,7 @@ class UserLog extends Component {
     }
 
     render() {
-
+console.log(this.props.userlogdata.filelog)
         return (
             <div>
                 <Header/>
@@ -48,7 +50,7 @@ class UserLog extends Component {
                             <h2>User Log</h2>
 
                             <ReactTable
-                                data={this.props.userlogdata.userLog}
+                                data={this.props.userlogdata.filelog}
                                 columns={[
                                     {
                                         Header: "File Name",
@@ -59,14 +61,14 @@ class UserLog extends Component {
                                         ]
                                     },
 
-                                    {
+                                    /*{
                                         Header: "File Path",
                                         columns: [
                                             {
                                                 accessor: "filepath"
                                             }
                                         ]
-                                    },
+                                    },*/
 
                                     {
                                         Header: "File Type",
@@ -101,16 +103,76 @@ class UserLog extends Component {
                             />
 
 
-                    </div>
+
+                        <br/>
+
+
+
+                            <h2>Group Log</h2>
+
+                            <ReactTable
+                                data={this.props.userlogdata.grouplog}
+                                columns={[
+                                    {
+                                        Header: "File Name",
+                                        columns: [
+                                            {
+                                                accessor: "filename"
+                                            }
+                                        ]
+                                    },
+
+                                    /*{
+                                        Header: "File Path",
+                                        columns: [
+                                            {
+                                                accessor: "filepath"
+                                            }
+                                        ]
+                                    },*/
+
+                                    {
+                                        Header: "File Type",
+                                        columns: [
+                                            {
+                                                accessor: "isfile"
+                                            }
+                                        ]
+                                    },
+
+                                    {
+                                        Header: "Activity",
+                                        columns: [
+                                            {
+                                                accessor: "action"
+                                            }
+                                        ]
+                                    },
+
+                                    {
+                                        Header: "Activity Time",
+                                        columns: [
+                                            {
+                                                accessor: "actiontime"
+                                            }
+                                        ]
+                                    }
+
+                                ]}
+                                defaultPageSize={5}
+                                className="-striped -highlight"
+                            />
+
+
+                        </div>
                         <br/>
                         <button className="btn btn-primary" type="submit"
                                 onClick={() => this.props.history.push("/files")}>
                             Back
                         </button>
                     </div>
-
                 </div>
-            </div>
+                </div>
             </div>
         );
     }
@@ -118,15 +180,17 @@ class UserLog extends Component {
 
 
 function mapStateToProps(reducerdata) {
-console.log(reducerdata )
+console.log(reducerdata)
     const userlogdata = reducerdata.userlogreducer;
+    console.log(userlogdata )
     return {userlogdata};
 }
 
 function mapDispatchToProps(dispatch) {
     return {
 
-        getUserLog : (data) => dispatch(getUserLog(data))
+        getFileLog : (data) => dispatch(getFileLog(data)),
+        getGroupLog : (data) => dispatch(getGroupLog(data))
     };
 }
 

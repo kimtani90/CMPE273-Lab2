@@ -19,6 +19,13 @@ class UserDetails extends Component {
                 console.log(res)
                 if (res.status == 201) {
                     this.props.afterlogin(res.userdetails);
+                    this.setState({firstname:res.userdetails.firstname,
+                        lastname:res.userdetails.lastname,
+                        email:res.userdetails.email,
+                        contactno:res.userdetails.contact,
+                        interests:res.userdetails.interests,
+                        editClicked:false})
+
                     console.log("Success...")
 
                 }else if (res.status == 401) {
@@ -26,6 +33,10 @@ class UserDetails extends Component {
                     this.props.history.push('/');
                 }
             });
+
+        console.log("fidrst")
+        console.log(this.props.userdata)
+
     }
 
 
@@ -40,7 +51,7 @@ class UserDetails extends Component {
                     this.props.updateUser(data);
                     this.setState({
                         editClicked:false,
-                        message: "User details update successfully!"
+                        message: "User details updated successfully!"
                     });
 
 
@@ -55,10 +66,9 @@ class UserDetails extends Component {
 
     }
 
-    state={firstname:'', lastname:'', email:this.props.userdata.email, contactno:'', interests:'', editClicked:false}
+    state={firstname:this.props.userdata.firstname, lastname:this.props.userdata.lastname, email:this.props.userdata.email, contactno:this.props.userdata.contact, interests:this.props.userdata.interests, editClicked:false}
 
     render() {
-console.log(this.props.userdata)
         return (
             <div>
                 <Header/>
@@ -83,7 +93,8 @@ console.log(this.props.userdata)
                                                autoFocus defaultValue={this.props.userdata.firstName}
                                                onChange={(event) => {
                                                    this.setState({
-                                                       firstname: event.target.value
+
+                                                       firstname: event.target.value==""?this.props.userdata.firstName:event.target.value
                                                    });
                                                }}/>
                                 } </td>
@@ -100,7 +111,7 @@ console.log(this.props.userdata)
                                                        autoFocus defaultValue={this.props.userdata.lastName}
                                                        onChange={(event) => {
                                                            this.setState({
-                                                               lastname: event.target.value
+                                                               lastname: event.target.value==""?this.props.userdata.lastName:event.target.value
                                                            });
                                                        }}/>
                                         } </td>
@@ -119,7 +130,7 @@ console.log(this.props.userdata)
                                                        autoFocus defaultValue={this.props.userdata.contactno}
                                                        onChange={(event) => {
                                                            this.setState({
-                                                               contactno: event.target.value
+                                                               contactno: event.target.value==""?this.props.userdata.contactno:event.target.value
                                                            });
                                                        }}/>
                                         } </td>
@@ -133,7 +144,7 @@ console.log(this.props.userdata)
                                                       defaultValue={this.props.userdata.interests}
                                                       onChange={(event) => {
                                                             this.setState({
-                                                                interests: event.target.value
+                                                                interests: event.target.value==""?this.props.userdata.interests:event.target.value
                                                             });
                                             }}/>
                                     } </td>
@@ -156,6 +167,7 @@ console.log(this.props.userdata)
                                     </button> :
                                     <button className="btn btn-primary" type="submit"
                                             onClick={() => this.setState({
+                                                ...this.state,
                                                 editClicked: true
                                             })}>
                                         Edit

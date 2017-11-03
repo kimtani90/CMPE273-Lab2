@@ -85,6 +85,46 @@ export const uploadFile = (payload) =>
         return error;
     });
 
+
+export const getGroups = (filepath) =>
+    fetch(`${api}/groups/getgroups`,{
+        method: 'GET',
+        credentials:'include'
+    })
+        .then(res => res.json())
+        .catch(error => {
+            console.log("This is error.");
+            return error;
+        });
+
+export const addGroup = (payload) =>
+    fetch(`${api}/groups/addgroup`, {
+        method: 'POST',
+        body: payload,
+        credentials:'include'
+    }).then(res => {
+        return res.json();
+    }).catch(error => {
+        console.log("This is error");
+        return error;
+    });
+
+export const deleteGroup = (data) =>
+    fetch(`${api}/groups/delete`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        credentials:'include'
+    }).then(res => {
+        return res.json();
+    }).catch(error => {
+        console.log("This is error");
+        return error;
+    });
+
 export const deleteFile = (file) =>
     fetch(`${api}/files/delete`, {
         method: 'POST',
@@ -149,23 +189,6 @@ export const shareFile = (filedata) =>
         console.log("This is error");
         return error;
     });
-
-export const shareFolder = (folderdata) =>
-    fetch(`${api}/files/sharefolder`, {
-        method: 'POST',
-        headers: {
-            ...headers,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(folderdata),
-        credentials:'include'
-    }).then(res => {
-        return res.json();
-    }).catch(error => {
-        console.log("This is error");
-        return error;
-    });
-
 
 export const logout = () =>
     fetch(`${api}/users/logout`, {

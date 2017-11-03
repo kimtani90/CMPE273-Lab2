@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import '../FileUpload.css';
 import Modal from 'react-modal';
 import {Row,Col,ListGroupItem} from 'react-bootstrap';
+import { Route, withRouter } from 'react-router-dom';
 
 class RightNavBar extends Component {
 
@@ -52,6 +53,12 @@ console.log(this.props.parentFile)
             <button className="btn btn-primary btn-block" type="submit"
                     onClick={() => this.openModal()}>
                 New Folder
+            </button>
+
+            <hr/>
+            <button className="btn btn-primary btn-block" type="submit"
+                    onClick={() => this.props.history.push('/groups')}>
+                Groups
             </button>
             <br/>
             <Modal isOpen={this.state.isModalOpen} style={this.style} onClose={() => this.closeModal()}>
@@ -108,4 +115,4 @@ console.log(this.props.parentFile)
 }
 
 
-export default RightNavBar;
+export default withRouter(RightNavBar);

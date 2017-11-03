@@ -6,6 +6,7 @@ import SignUp from "./SignUp";
 import FileUpload from "./FileUpload";
 import Login from "./Login";
 import Container from "./Container";
+import Group from "./Group";
 import UserDetails from "./UserDetails";
 import UserLog from "./UserLog";
 import dropbox from "./dropbox-img.png";
@@ -53,6 +54,12 @@ class NewerHomePage extends Component {
 
 
                     <UserLog/>
+                )}/>
+
+                <Route exact path="/groups" render={() => (
+
+
+                    <Group/>
                 )}/>
             </div>
 
