@@ -14,37 +14,18 @@ import ReactTable from "react-table";
 import "react-table/react-table.css";
 
 
-class ListGroup extends Component {
+class ListMembers extends Component {
 
     state = {message:''}
 
-    componentWillMount(){
+    deleteMember(index, member){
 
-        API.getGroups()
-            .then((res) => {
-
-            console.log(res)
-                if (res.status == 201) {
-                    this.props.getGroups(res.groups);
-                    console.log(res.groups)
-                    this.setState({ message: res.message })
-                    console.log("Success...")
-
-                }else if (res.status == 401) {
-
-                    this.setState({ message: res.message })
-                }
-            });
-    }
-
-    deleteGroup(index, group){
-
-        API.deleteGroup(group)
+        API.deleteMember(member)
             .then((res) => {
 
                 console.log(res)
                 if (res.status == 201) {
-                    this.props.deleteGroup(index);
+                    this.props.deleteMember(index);
                     this.setState({ message: res.message })
                     console.log("Success...")
 
@@ -66,9 +47,9 @@ class ListGroup extends Component {
                     <tr className="justify-content-md-left">
 
                         <th></th>
-                        <th>Group Name</th>
-                        <th>Members</th>
-                        <th>Manager</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Group</th>
 
                     </tr>
                     </thead>
@@ -89,7 +70,7 @@ class ListGroup extends Component {
                                 </td>
                                 <td>
                                     <a href="#" className="link-title "
-                                        onClick={/!*() => this.props.openGroup(group)*!/}>*/>
+                                       onClick={/!*() => this.props.openGroup(group)*!/}>*/>
                                         {group.groupname}
                                     </a>
                                 </td>
@@ -129,7 +110,7 @@ class ListGroup extends Component {
 function mapStateToProps(reducerdata) {
     console.log(reducerdata);
     const groupdata = reducerdata.groupreducer;
-console.log(groupdata)
+    console.log(groupdata)
     return {groupdata};
 }
 
@@ -141,6 +122,6 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListGroup));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListMembers));
 
 

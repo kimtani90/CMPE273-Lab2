@@ -97,20 +97,9 @@ export const getGroups = (filepath) =>
             return error;
         });
 
-export const addGroup = (payload) =>
-    fetch(`${api}/groups/addgroup`, {
-        method: 'POST',
-        body: payload,
-        credentials:'include'
-    }).then(res => {
-        return res.json();
-    }).catch(error => {
-        console.log("This is error");
-        return error;
-    });
+export const addGroup = (data) =>
 
-export const deleteGroup = (data) =>
-    fetch(`${api}/groups/delete`, {
+    fetch(`${api}/groups/addgroup`, {
         method: 'POST',
         headers: {
             ...headers,
@@ -124,6 +113,68 @@ export const deleteGroup = (data) =>
         console.log("This is error");
         return error;
     });
+
+export const deleteGroup = (data) =>
+    fetch(`${api}/groups/deletegroup`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        credentials:'include'
+    }).then(res => {
+        return res.json();
+    }).catch(error => {
+        console.log("This is error");
+        return error;
+    });
+
+
+export const getMembers = (data) =>
+    fetch(`${api}/groups/getmembers`,{
+        method: 'GET',
+        credentials:'include'
+    })
+        .then(res => res.json())
+        .catch(error => {
+            console.log("This is error.");
+            return error;
+        });
+
+export const addMember = (data) =>
+
+    fetch(`${api}/groups/addmember`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        credentials:'include'
+    }).then(res => {
+        return res.json();
+    }).catch(error => {
+        console.log("This is error");
+        return error;
+    });
+
+export const deleteMember = (data) =>
+    fetch(`${api}/groups/deletemember`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        credentials:'include'
+    }).then(res => {
+        return res.json();
+    }).catch(error => {
+        console.log("This is error");
+        return error;
+    });
+
 
 export const deleteFile = (file) =>
     fetch(`${api}/files/delete`, {

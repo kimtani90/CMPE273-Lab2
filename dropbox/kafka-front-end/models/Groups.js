@@ -5,7 +5,10 @@ var Schema       = mongoose.Schema;
 
 var GroupSchema   = new Schema({
 
-    groups:Array
+    'groupname': String,
+    'membercount': Number,
+    'owner': String,
+    'members': Array
 
 });
 

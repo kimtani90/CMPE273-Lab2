@@ -3,6 +3,9 @@ export const GET_USER = 'GET_USER';
 export const ADDFILE = 'ADDFILE';
 export const DELETE_FILE = 'DELETE_FILE';
 
+export const ADD_MEMBER = 'ADD_MEMBER';
+export const DELETE_MEMBER = 'DELETE_MEMBER';
+
 export const GET_GROUPS = 'GET_GROUPS';
 export const ADD_GROUP = 'ADD_GROUP';
 export const DELETE_GROUP = 'DELETE_GROUP';
@@ -80,10 +83,28 @@ export function addFile(filedata) {
 };
 
 
-export function deleteFile(index) {
+export function getFiles(filedata) {
 
     return {
-        type : DELETE_FILE,
+        type : GET_FILES,
+        payload : filedata
+    }
+};
+
+
+export function addMember(memberdata) {
+
+    return {
+        type : ADD_MEMBER,
+        payload : memberdata
+    }
+};
+
+
+export function deleteMember(index) {
+
+    return {
+        type : DELETE_MEMBER,
         payload : index
     }
 };

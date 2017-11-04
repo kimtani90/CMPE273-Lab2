@@ -9,6 +9,7 @@ import {connect} from 'react-redux';
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 import Header from "./Header";
+import GroupRightNavBar from "./GroupRightNavBar";
 
 
 class Group extends Component {
@@ -27,14 +28,15 @@ class Group extends Component {
         }
     };
 
+    openGroup(data){
+
+
+    }
+
     render(){
 
 
         return (
-
-
-
-
 
             <div className="container-fluid">
                 <Header/>
@@ -57,7 +59,8 @@ class Group extends Component {
                             <div className="col-sm-3"></div>
                             <ListGroup/>
                             <div className="col-sm-1 "></div>
-                            {/*<RightNavBar makeFolder={this.makeFolder}
+                            <GroupRightNavBar/>
+                            {/*makeFolder={this.makeFolder}
                                          makeSharedFolder={this.makeSharedFolder}
                                          parentFile={this.state.fileparent}/>*/}
                         </div>
