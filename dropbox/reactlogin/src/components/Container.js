@@ -49,7 +49,7 @@ class Container extends Component {
                 if (status === 201) {
 
                     this.setState({
-
+                        login: "SI",
                         message: "User details saved successfully!"
                     });
                 } else if (status === 401) {

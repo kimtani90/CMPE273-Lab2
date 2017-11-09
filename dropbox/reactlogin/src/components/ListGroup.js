@@ -81,7 +81,7 @@ class ListGroup extends Component {
 
                                 <td>
                                     <div className="row justify-content-md-left">
-                                        <div className="col-md-1">&#9733;</div>
+                                        <div className="col-md-1"><i className="fa fa-group" ></i></div>
                                         {/*{/!*<div>&#9734;</div>*!/}*/}
 
 
@@ -89,7 +89,7 @@ class ListGroup extends Component {
                                 </td>
                                 <td>
                                     <a href="#" className="link-title "
-                                        onClick={/!*() => this.props.openGroup(group)*!/}>*/>
+                                        onClick={() => this.props.openGroup(group)}>
                                         {group.groupname}
                                     </a>
                                 </td>

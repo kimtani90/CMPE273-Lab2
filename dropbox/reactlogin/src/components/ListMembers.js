@@ -5,12 +5,9 @@ import '../FileUpload.css';
 import { Route, withRouter } from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as API from '../api/API';
-import {deleteGroup} from "../actions/index";
+import {deleteMember} from "../actions/index";
 
-import {getGroups} from "../actions/index";
-
-// Import React Table
-import ReactTable from "react-table";
+import {getMembers} from "../actions/index";
 import "react-table/react-table.css";
 
 
@@ -18,8 +15,28 @@ class ListMembers extends Component {
 
     state = {message:''}
 
-    deleteMember(index, member){
+    componentWillMount(){
+console.log(this.props.group)
+        API.getMembers(this.props.group)
+            .then((res) => {
 
+                console.log(res)
+                if (res.status == 201) {
+                    this.props.getMembers(res.members);
+                    console.log(res.members)
+                    this.setState({ message: res.message })
+                    console.log("Success...")
+
+                }else if (res.status == 401) {
+
+                    this.setState({ message: res.message })
+                }
+            });
+    }
+
+    deleteMember(index, member){
+        member.owner=this.props.group.owner;
+console.log(member);
         API.deleteMember(member)
             .then((res) => {
 
@@ -37,7 +54,7 @@ class ListMembers extends Component {
     }
 
     render() {
-        console.log(this.props.groupdata)
+        console.log(this.props.memberdata)
         return (
 
             <div className="col-sm-6">
@@ -55,40 +72,35 @@ class ListMembers extends Component {
                     </thead>
 
                     <tbody>
-                    {this.props.groupdata.groups.map((group, index) => {
+                    {this.props.memberdata.members.map((member, index) => {
 
                         return (
                             <tr className="justify-content-md-left">
 
                                 <td>
                                     <div className="row justify-content-md-left">
-                                        <div className="col-md-1">&#9733;</div>
+                                        <div className="col-md-1"><i className="fa fa-user" ></i></div>
                                         {/*{/!*<div>&#9734;</div>*!/}*/}
 
 
                                     </div>
                                 </td>
                                 <td>
-                                    <a href="#" className="link-title "
-                                       onClick={/!*() => this.props.openGroup(group)*!/}>*/>
-                                        {group.groupname}
-                                    </a>
+                                    {member.firstname}
                                 </td>
                                 <td>
-                                    {group.membercount}
+                                    {member.lastname}
                                 </td>
                                 <td>
-                                    {group.owner}
+                                    {member.group}
                                 </td>
 
                                 <td>
                                     <button className="btn btn-primary" type="submit"
-                                            onClick={() => this.deleteGroup(index, group)}>
+                                            onClick={() => this.deleteMember(index, member)}>
                                         Delete
                                     </button>
                                 </td>
-
-
                             </tr>
                         );
                     })}
@@ -97,28 +109,22 @@ class ListMembers extends Component {
                 </table>
 
             </div>
-
-
         );
     }
-
-
-
 }
 
 
 function mapStateToProps(reducerdata) {
     console.log(reducerdata);
-    const groupdata = reducerdata.groupreducer;
-    console.log(groupdata)
-    return {groupdata};
+    const memberdata = reducerdata.memberreducer;
+    console.log(memberdata)
+    return {memberdata};
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-
-        deleteGroup : (index) => dispatch(deleteGroup(index)),
-        getGroups : (data) => dispatch(getGroups(data))
+        getMembers : (data) => dispatch(getMembers(data)),
+        deleteMember : (index) => dispatch(deleteMember(index))
     };
 }
 

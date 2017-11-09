@@ -3,39 +3,30 @@ import {Row,Col,ListGroupItem} from 'react-bootstrap';
 import Modal from 'react-modal';
 import '../FileUpload.css';
 import ListGroup from "./ListGroup";
-import { Route, withRouter } from 'react-router-dom';
 import {connect} from 'react-redux';
-// Import React Table
-import ReactTable from "react-table";
 import "react-table/react-table.css";
 import Header from "./Header";
 import GroupRightNavBar from "./GroupRightNavBar";
+import MemberRightNavBar from "./MemberRightNavBar";
+import ListMembers from "./ListMembers";
+import LeftNavBar from "./LeftNavBar";
 
 
 class Group extends Component {
 
 
-    state = { isModalOpen: false, shareEmail:'', file:'' , group:[], downloadLink:''}
+    state = { index:'', group:'', entergroup:''};
 
-    style = {
-        content : {
-            top                   : '50%',
-            left                  : '50%',
-            right                 : 'auto',
-            bottom                : 'auto',
-            marginRight           : '-50%',
-            transform             : 'translate(-50%, -50%)'
-        }
-    };
+    openGroup=(groupdata)=>{
+        console.log(groupdata);
 
-    openGroup(data){
-
+        this.setState({group:groupdata, entergroup:'T'});
 
     }
 
     render(){
 
-
+console.log(this.state.group.members)
         return (
 
             <div className="container-fluid">
@@ -55,24 +46,24 @@ class Group extends Component {
 
 
                         <div className="row">
-                            {/*<LeftNavBar userdetails={this.userdetails}/>*/}
-                            <div className="col-sm-3"></div>
-                            <ListGroup/>
+                            <LeftNavBar/>
+                            <div className="col-sm-1"></div>
+                            {this.state.entergroup==''?
+                                <ListGroup openGroup={this.openGroup}/>
+                                :
+                                <ListMembers group={this.state.group}/>}
+
                             <div className="col-sm-1 "></div>
-                            <GroupRightNavBar/>
-                            {/*makeFolder={this.makeFolder}
-                                         makeSharedFolder={this.makeSharedFolder}
-                                         parentFile={this.state.fileparent}/>*/}
+                            {this.state.entergroup==''?
+                                <GroupRightNavBar/>
+                                :
+                                <MemberRightNavBar index={this.state.index}
+                                                   group={this.state.group}/>}
+
                         </div>
                     </div>
-
                 </div>
-
-
             </div>
-
-
-
         );
     }
 

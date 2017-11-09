@@ -132,15 +132,20 @@ export const deleteGroup = (data) =>
 
 
 export const getMembers = (data) =>
-    fetch(`${api}/groups/getmembers`,{
-        method: 'GET',
+    fetch(`${api}/groups/getmembers`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
         credentials:'include'
-    })
-        .then(res => res.json())
-        .catch(error => {
-            console.log("This is error.");
-            return error;
-        });
+    }).then(res => {
+        return res.json();
+    }).catch(error => {
+        console.log("This is error");
+        return error;
+    });
 
 export const addMember = (data) =>
 
@@ -233,6 +238,24 @@ export const shareFile = (filedata) =>
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(filedata),
+        credentials:'include'
+    }).then(res => {
+        return res.json();
+    }).catch(error => {
+        console.log("This is error");
+        return error;
+    });
+
+
+export const markStar = (data) =>
+
+    fetch(`${api}/files/star`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
         credentials:'include'
     }).then(res => {
         return res.json();

@@ -35,7 +35,7 @@ class SignUp extends Component {
                        }}/>
 
                 <br/>
-                <input type="email" className="form-control" placeholder="Email" required autoFocus
+                <input type="email" className="form-control" placeholder="Email" required
                        onChange={(event) => {
                            this.setState({
                                email: event.target.value

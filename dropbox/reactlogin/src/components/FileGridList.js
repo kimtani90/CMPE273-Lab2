@@ -2,23 +2,28 @@ import React, {Component} from 'react';
 import {Row,Col,ListGroupItem} from 'react-bootstrap';
 import Modal from 'react-modal';
 import '../FileUpload.css';
-
+import * as API from '../api/API';
+import { Route, withRouter } from 'react-router-dom';
+import {markStar} from "../actions/index";
+import {connect} from 'react-redux';
 // Import React Table
 import ReactTable from "react-table";
 import "react-table/react-table.css";
+import index from "../reducers/index";
 
 
 class FileGridList extends Component {
 
 
 
-    state = { isModalOpen: false, shareEmail:'', file:'' , group:[], downloadLink:''}
-    openModal(file, downloadLink) {
-        this.setState({ isModalOpen: true , file: file, downloadLink:downloadLink, showLink:false})
+    state = { index:'', isModalOpen: false, shareEmail:'', file:'' , group:[], downloadLink:''}
+
+    openModal(index, file, downloadLink) {
+        this.setState({ index:index, isModalOpen: true , file: file, downloadLink:downloadLink, showLink:false})
     }
 
     closeModal(data) {
-        console.log(data);
+
 
         {data!=""?
 
@@ -30,6 +35,26 @@ class FileGridList extends Component {
     generateLink(){
         this.setState({ showLink: true })
     }
+
+    markStar(index, filepath, starred){
+
+        const data={filepath:filepath, starred:starred}
+
+        API.markStar(data)
+            .then((res) => {
+
+                if (res.status == 201) {
+                    console.log(res);
+
+                    this.props.markStar(index, res.starred);
+
+                }else if (res.status == 401) {
+
+                    this.setState({ message: res.message })
+                }
+            });
+    }
+
 
     style = {
         content : {
@@ -62,23 +87,37 @@ class FileGridList extends Component {
 
                     <tbody>
 
-                    {this.props.files.map((file, index) => {
-console.log(file);
+                    {this.props.filedata.files.map((file, index) => {
+
+
                       //  if(file.fileparent==this.props.parentFile || (file.isfile=='T' && file.owner!= this.props.userEmail )) {
-                            var downloadlink="http://localhost:3001/uploads/"+this.props.userEmail.split('.')[0]+"/"+file.filename
+                            var downloadlink="abc"//http://localhost:3001/uploads/"+this.props.userEmail.split('.')[0]+"/"+file.filename
                             return (
-                                <tr className="justify-content-md-left">
+                                <tr className="justify-content-md-center">
 
                                     <td>
                                         <div className="row justify-content-md-left">
-                                            <div className="col-md-1">&#9733;</div>
-                                        {/*<div>&#9734;</div>*/}
 
                                             <div className="col-md-1">
-                                        {file.isfile=='T'?
-                                        <span className="fa fa-file"></span>:
-                                        <span className="fa fa-folder"></span>
-                                        }
+                                                {file.starred==true?
+                                                    <a href="#" className="link-title "
+                                                       onClick={() => this.markStar(index, file.filepath, false)}>
+
+                                                    <span className="fa fa-star" ></span>
+
+                                                    </a>
+                                                :
+                                                    <a href="#" className="link-title "
+                                                       onClick={() => this.markStar(index, file.filepath, true)}>
+
+                                                    <span className="fa fa-star-o" onClick={() => this.markStar(index, file)}></span>
+                                                    </a>}
+                                            </div>
+                                            <div className="col-md-1">
+                                                {file.isfile=='T'?
+                                                <span className="fa fa-file"></span>:
+                                                <span className="fa fa-folder"></span>
+                                                }
                                             </div>
 
                                         </div>
@@ -114,7 +153,7 @@ console.log(file);
                                     </td>
                                     <td>
                                         <button className="btn btn-primary" type="submit"
-                                                onClick={() => this.openModal(file, downloadlink)}>
+                                                onClick={() => this.openModal(index, file, downloadlink)}>
                                             Share
                                         </button>
 
@@ -197,4 +236,22 @@ console.log(file);
 }
 
 
-export default FileGridList;
+
+function mapStateToProps(reducerdata) {
+
+    const filedata = reducerdata.filesreducer;
+
+    return {filedata};
+}
+
+
+function mapDispatchToProps(dispatch) {
+    return {
+
+        markStar : (index, data) => dispatch(markStar(index, data))
+    };
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(FileGridList));
+
+

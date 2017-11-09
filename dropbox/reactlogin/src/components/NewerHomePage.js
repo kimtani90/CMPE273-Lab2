@@ -61,6 +61,12 @@ class NewerHomePage extends Component {
 
                     <Group/>
                 )}/>
+
+               {/* <Route exact path="/members" render={() => (
+
+
+                    <Group/>
+                )}/>*/}
             </div>
 
         );

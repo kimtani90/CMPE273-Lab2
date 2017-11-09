@@ -31,7 +31,8 @@ var res={}
         'fileparent': fileparent,
         'isfile': isfile,
         'owner':msg.email,
-        'sharedcount':0
+        'sharedcount':0,
+        'starred' : false
     };
 
     var newfile=new File();
@@ -62,6 +63,7 @@ var res={}
                 if (err) {
                     console.log(err)
                     res.code = "401";
+
                 }
                 else {
 
@@ -100,6 +102,7 @@ function getFiles(msg, callback) {
 
         if(!filesArr){
             res.code = "401";
+            callback(null, res);
         }
         else {
 
@@ -107,6 +110,35 @@ function getFiles(msg, callback) {
 
             res.code = "200";
             res.value = {"files": files};
+            callback(null, res);
+        }
+
+    });
+}
+
+
+
+function markUnmarkStar(msg, callback) {
+
+
+    var res = {}
+
+    var filepath = msg.file.filepath;
+    var starred = msg.file.starred;
+
+
+    File.update( {'filepath' : filepath}, {$set:{'starred':starred}} , function (err) {
+
+        if (err) {
+            throw err;
+            res.code = "401";
+            callback(null, res);
+        }
+
+        else {
+
+            res.code = "200";
+            res.value = {'starred':starred}
             callback(null, res);
         }
 
@@ -135,6 +167,7 @@ console.log(msg);
             throw err;
             res.code = "401";
             res.value = "Error deleting file!";
+            callback(null, res);
         }
 
         if(file){
@@ -145,8 +178,9 @@ console.log(msg);
                 }
                 catch (err) {
 
-                    res.code = "200";
+                    res.code = "401";
                     res.value = "Folder is not empty!";
+                    callback(null, res);
                 }
 
             }
@@ -161,6 +195,7 @@ console.log(msg);
                     throw err;
                     res.code = "401";
                     res.value = "Error deleting file!";
+                    callback(null, res);
                 }
                 else{
 
@@ -188,6 +223,7 @@ console.log(msg);
         else{
             res.code = "401";
             res.value = "You need admin rights to delete the file/folder!"
+            callback(null, res);
         }
     });
 
@@ -214,7 +250,8 @@ function makeFolder(msg, callback) {
         'fileparent': fileparent,
         'isfile': isfile,
         'owner':msg.email,
-        'sharedcount':0
+        'sharedcount':0,
+        'starred' : false
     };
 
     var newfolder=new File();
@@ -245,6 +282,7 @@ function makeFolder(msg, callback) {
         if(err){
             res.code = "401";
             res.value = "Error making folder!";
+            callback(null, res);
         }
         else {
 
@@ -253,6 +291,7 @@ function makeFolder(msg, callback) {
                     throw err;
                     res.code = "401";
                     res.value = "Error making folder!";
+                    callback(null, res);
                 }
                 else {
 
@@ -298,6 +337,7 @@ function shareFile(msg, callback) {
             throw err;
             res.code = "401";
             res.value = {"shareEmail":shareEmail}
+            callback(null, res);
         }
         else{
 
@@ -318,6 +358,7 @@ function shareFile(msg, callback) {
 
 }
 
+exports.markUnmarkStar=markUnmarkStar;
 exports.shareFile=shareFile;
 exports.makeFolder=makeFolder;
 exports.fileDelete=fileDelete;

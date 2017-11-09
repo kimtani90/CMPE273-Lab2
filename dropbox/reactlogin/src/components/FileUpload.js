@@ -10,6 +10,7 @@ import RightNavBar from "./RightNavBar";
 import LeftNavBar from "./LeftNavBar";
 import {afterlogin} from "../actions/index";
 import {getFiles} from "../actions/index";
+import {sharedCount} from "../actions/index";
 import Header from "./Header";
 import { Route, withRouter } from 'react-router-dom';
 
@@ -44,7 +45,7 @@ class FileUpload extends Component {
         const payload = new FormData();
 
         payload.append('file', event.target.files[0]);
-      //  payload.append('email', this.props.userdata.email);
+
         payload.append('fileparent', this.state.fileparent);
         payload.append('isfile', 'T');
 
@@ -72,7 +73,7 @@ class FileUpload extends Component {
 
         API.deleteFile(file)
             .then((res) => {
-
+                console.log(res);
                 if (res.status == 201) {
 
                     console.log("Delete success")
@@ -87,12 +88,7 @@ class FileUpload extends Component {
                         message: res.message
                     });
                 }
-                /*else if (res.status == 402) {
-                    this.setState({
 
-                        message: res.message
-                    });
-                }*/
             });
 
     }
@@ -125,7 +121,6 @@ class FileUpload extends Component {
 
         var emailList=filedata.shareEmail.trim().split(';');
 
-        console.log(emailList)
 
         for (var key in emailList) {
 
@@ -135,7 +130,8 @@ class FileUpload extends Component {
                 .then((res) => {
 
                     if (res.status == 201) {
-                        console.log(data)
+
+                        this.props.sharedCount(filedata.index, data.filedata.sharedcount+1);
                         this.setState({
 
                             message: this.state.message+" File Shared with "+data.shareEmail+"!"
@@ -143,7 +139,7 @@ class FileUpload extends Component {
                         console.log("Success...")
 
                     } else if (res.status == 401) {
-                        console.log("here")
+
                         this.setState({
 
                             message: this.state.message+" "+data.shareEmail+" does not exist!"
@@ -152,11 +148,12 @@ class FileUpload extends Component {
                 });
         }
 
+
+
     }
 
     makeSharedFolder=(data) => {
-/*console.log(data)
-        const folderData={folder:data, email:this.props.userdata.email}*/
+
         API.makeFolder(data)
             .then((res) => {
 
@@ -286,14 +283,12 @@ class FileUpload extends Component {
                     </div>
 
                     <div className="row">
-                        <LeftNavBar userdetails={this.userdetails}/>
+                        <LeftNavBar/>
                         <div className="col-sm-1 "></div>
-                        <FileGridList files={this.props.filesdata.files}
-                                      deleteFile={this.deleteFile}
+                        <FileGridList deleteFile={this.deleteFile}
                                       sharefile={this.sharefile}
                                       openFileFolder={this.openFileFolder}
-                                      parentFile={this.state.fileparent}
-                                      userEmail={this.props.userdata.email}/>
+                                      parentFile={this.state.fileparent}/>
                         <div className="col-sm-1 "></div>
                         <RightNavBar makeFolder={this.makeFolder}
                                      makeSharedFolder={this.makeSharedFolder}
@@ -315,9 +310,9 @@ class FileUpload extends Component {
 
 function mapStateToProps(reducerdata) {
     console.log(reducerdata);
-    const userdata = reducerdata.userreducer;
+
     const filesdata = reducerdata.filesreducer;
-    return {userdata, filesdata};
+    return {filesdata};
 }
 
 function mapDispatchToProps(dispatch) {
@@ -326,7 +321,8 @@ function mapDispatchToProps(dispatch) {
         addFile : (data) => dispatch(addFile(data)),
         deleteFile : (index) => dispatch(deleteFile(index)),
         afterlogin : (data) => dispatch(afterlogin(data)),
-        getFiles : (data) => dispatch(getFiles(data))
+        getFiles : (data) => dispatch(getFiles(data)),
+        sharedCount : (index, data) => dispatch(sharedCount(index, data))
     };
 }
 

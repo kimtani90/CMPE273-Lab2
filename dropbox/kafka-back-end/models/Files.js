@@ -11,7 +11,8 @@ var FileSchema   = new Schema({
     'isfile': String,
     'owner': String,
     'sharedcount': Number,
-    'sharedlist' : Array
+    'sharedlist' : Array,
+    'starred' : Boolean
 });
 
 module.exports = mongoose.model('File', FileSchema);

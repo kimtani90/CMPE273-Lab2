@@ -118,7 +118,7 @@ router.post('/upload', upload.single('file'), function (req, res) {
         else {
 
             var buffer = buf.toString('base64');
-            //  console.log(buffer);
+
             kafka.make_request('upload', {
                 "email": req.session.email,
                 "file": req.file,
@@ -126,8 +126,6 @@ router.post('/upload', upload.single('file'), function (req, res) {
                 "buffer": buffer
             }, function (err, results) {
 
-                console.log('in result');
-                console.log(results);
                 if (err) {
                     res.send({status: 401});
                 }
@@ -165,6 +163,31 @@ router.post('/makefolder', function (req, res) {
             }
             else {
                 res.send({status: 401, message: results.value});
+
+            }
+        }
+    });
+
+});
+
+
+router.post('/star', function (req, res) {
+
+    kafka.make_request('starfile',{"file":req.body}, function(err,results){
+
+        console.log('in result');
+        console.log(results);
+        if(err){
+            res.send({status: 401});
+
+        }
+        else
+        {
+            if(results.code == 200){
+                res.send({status: 201, starred: results.value.starred});
+            }
+            else {
+                res.send({status: 401});
 
             }
         }

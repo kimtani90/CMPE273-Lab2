@@ -1,6 +1,7 @@
 var connection =  new require('./kafka/Connection');
 var user = require('./services/user');
 var file = require('./services/file');
+var group = require('./services/group');
 
 //var topic_name = 'login';
 var consumer = connection.getConsumer();
@@ -87,6 +88,69 @@ consumer.on('message', function (message) {
     else if(message.topic=='updateuser'){
 
         user.updateUser(data.data, function(err,res){
+
+            response(data, res);
+            return;
+        });
+    }
+
+    else if(message.topic=='starfile'){
+
+        file.markUnmarkStar(data.data, function(err,res){
+
+            response(data, res);
+            return;
+        });
+    }
+
+    else if(message.topic=='getgroups'){
+
+        group.getGroups(data.data, function(err,res){
+
+            response(data, res);
+            return;
+        });
+    }
+
+    else if(message.topic=='deletegroup'){
+
+        group.deleteGroup(data.data, function(err,res){
+
+            response(data, res);
+            return;
+        });
+    }
+
+    else if(message.topic=='addgroup'){
+
+        group.addGroup(data.data, function(err,res){
+
+            response(data, res);
+            return;
+        });
+    }
+
+    else if(message.topic=='getmembers'){
+
+        group.getMembers(data.data, function(err,res){
+
+            response(data, res);
+            return;
+        });
+    }
+
+    else if(message.topic=='deletemember'){
+
+        group.deleteMember(data.data, function(err,res){
+
+            response(data, res);
+            return;
+        });
+    }
+
+    else if(message.topic=='addmember'){
+
+        group.addMember(data.data, function(err,res){
 
             response(data, res);
             return;

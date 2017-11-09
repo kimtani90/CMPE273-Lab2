@@ -7,7 +7,8 @@ var GroupSchema   = new Schema({
 
     'groupname': String,
     'membercount': Number,
-    'owner': String
+    'owner': String,
+    'members': Array
 
 });
 

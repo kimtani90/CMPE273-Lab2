@@ -21,6 +21,7 @@ function login(msg, callback){
                 console.log('errorr');
                 res.code = "401";
                 res.value = "Failed Login";
+                callback(null, res);
             }
             else {
 
@@ -36,8 +37,6 @@ function login(msg, callback){
                         res.code = "200";
                         res.value = "Success Login";
 
-                        console.log('sending back the response');
-                        console.log(res);
                         callback(null, res);
                     }
 
@@ -73,6 +72,7 @@ function getUserDetails(msg, callback){
 
             res.code = "401";
             res.value = "Failed to get user details";
+            callback(null, res);
         }
         else {
 
@@ -83,6 +83,7 @@ function getUserDetails(msg, callback){
 
                     res.code = "401";
                     res.value = "Failed to get user details";
+                    callback(null, res);
                 }
 
                 else {
@@ -94,12 +95,14 @@ function getUserDetails(msg, callback){
 
                             res.code = "401";
                             res.value = "Failed to get user details";
+                            callback(null, res);
                         }
 
                         if (!user) {
 
                             res.code = "401";
                             res.value = "Failed to get user details";
+                            callback(null, res);
                         }
                         else {
 
@@ -153,6 +156,7 @@ function signup(msg, callback){
 
             res.code = "401";
             res.value = "Failed to get user details";
+            callback(null, res);
         }
         else {
 
@@ -163,6 +167,7 @@ function signup(msg, callback){
 
                     res.code = "401";
                     res.value = "Failed to get user details";
+                    callback(null, res);
                 }
                 else {
 
@@ -202,6 +207,7 @@ function updateUser(msg, callback) {
         if(err){
             console.log(err);
             res.code = "401";
+            callback(null, res);
         }
         else
         {

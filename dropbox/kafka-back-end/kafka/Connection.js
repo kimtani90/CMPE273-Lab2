@@ -14,7 +14,14 @@ function ConnectionProvider() {
                 { topic: 'deletefile', partition: 0 },
                 { topic: 'makefolder', partition: 0 },
                 { topic: 'sharefile', partition: 0 },
-                { topic: 'updateuser', partition: 0 }]);
+                { topic: 'updateuser', partition: 0 },
+                { topic: 'starfile', partition: 0 },
+                { topic: 'getgroups', partition: 0 },
+                { topic: 'deletegroup', partition: 0 },
+                { topic: 'addgroup', partition: 0 },
+                { topic: 'getmembers', partition: 0 },
+                { topic: 'deletemember', partition: 0 },
+                { topic: 'addmember', partition: 0 }]);
 
             this.client.on('ready', function () { console.log('client ready!') })
         }
