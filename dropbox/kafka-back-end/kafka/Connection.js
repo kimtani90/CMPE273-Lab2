@@ -21,6 +21,8 @@ function ConnectionProvider() {
                 { topic: 'addgroup', partition: 0 },
                 { topic: 'getmembers', partition: 0 },
                 { topic: 'deletemember', partition: 0 },
+                { topic: 'sharefileingroup', partition: 0 },
+                { topic: 'downloadfile', partition: 0 },
                 { topic: 'addmember', partition: 0 }]);
 
             this.client.on('ready', function () { console.log('client ready!') })

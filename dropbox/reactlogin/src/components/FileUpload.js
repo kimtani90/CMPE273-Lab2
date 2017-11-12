@@ -152,6 +152,35 @@ class FileUpload extends Component {
 
     }
 
+    sharefileingroup=(data) => {
+
+console.log(data);
+        API.shareFileInGroup(data)
+            .then((res) => {
+console.log(res)
+                if (res.status == 201) {
+
+                    this.props.sharedCount(data.index, res.sharedcount);
+                    this.setState({
+
+                        message: this.state.message+" File Shared with "+data.group+" group!"
+                    });
+                    console.log("Success...")
+
+                } else if (res.status == 401) {
+
+                    this.setState({
+
+                        message: this.state.message+" "+data.group+" does not exist!"
+                    });
+                }
+            });
+
+
+
+
+    }
+
     makeSharedFolder=(data) => {
 
         API.makeFolder(data)
@@ -198,7 +227,6 @@ class FileUpload extends Component {
 
                 }
 
-
             });
 
         }
@@ -215,7 +243,7 @@ class FileUpload extends Component {
 
                 });
         }
-        console.log(this.state.fileparent);
+
 
     }
 
@@ -245,8 +273,6 @@ class FileUpload extends Component {
 
         console.log(this.state.fileparent);
         return (
-
-
 
             <div className="container-fluid">
                 <Header/>
@@ -286,6 +312,7 @@ class FileUpload extends Component {
                         <LeftNavBar/>
                         <div className="col-sm-1 "></div>
                         <FileGridList deleteFile={this.deleteFile}
+                                      sharefileingroup={this.sharefileingroup}
                                       sharefile={this.sharefile}
                                       openFileFolder={this.openFileFolder}
                                       parentFile={this.state.fileparent}/>

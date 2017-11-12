@@ -62,7 +62,7 @@ class NewerHomePage extends Component {
                     <Group/>
                 )}/>
 
-               {/* <Route exact path="/members" render={() => (
+               {/*<Route exact path="/members" render={() => (
 
 
                     <Group/>

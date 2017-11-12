@@ -156,6 +156,24 @@ consumer.on('message', function (message) {
             return;
         });
     }
+
+    else if(message.topic=='sharefileingroup'){
+
+        file.shareFileInGroup(data.data, function(err,res){
+
+            response(data, res);
+            return;
+        });
+    }
+
+    else if(message.topic=='downloadfile'){
+
+        file.downloadFile(data.data, function(err,res){
+
+            response(data, res);
+            return;
+        });
+    }
 });
 
 function response(data, res) {

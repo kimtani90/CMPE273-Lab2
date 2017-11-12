@@ -24,6 +24,12 @@ class Group extends Component {
 
     }
 
+    navigatetogroups=()=>{
+
+
+        this.setState({entergroup:''});
+
+    }
     render(){
 
 console.log(this.state.group.members)
@@ -58,7 +64,8 @@ console.log(this.state.group.members)
                                 <GroupRightNavBar/>
                                 :
                                 <MemberRightNavBar index={this.state.index}
-                                                   group={this.state.group}/>}
+                                                   group={this.state.group}
+                                                   navigatetogroups={this.navigatetogroups}/>}
 
                         </div>
                     </div>

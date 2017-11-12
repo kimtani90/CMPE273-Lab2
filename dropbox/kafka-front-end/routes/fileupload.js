@@ -8,6 +8,7 @@ var User = require('../models/User');
 var File = require('../models/Files');
 var UserLog = require('../models/UserLog');
 var kafka = require('./kafka/client');
+var path = require('path');
 
 
 
@@ -31,27 +32,44 @@ var upload = multer({storage:storage});
 router.get('/',  function (req, res) {
 
 
-    console.log(req.query.filedata);
-    var filedata=req.query.filedata;
+    console.log(req.query.filepath);
+    var filepath=req.query.filepath;
+    var tempfilepath='./public/uploads/'+filepath.split('/')[filepath.split('/').length-1]
+console.log(tempfilepath)
+    kafka.make_request('downloadfile',{"filepath": filepath}, function(err,results){
 
-    console.log(filedata);
-
-    fs.readFile("/home/kimtani90/PersonalDocs/AboutMe.odt", function (err, data) {
-
+        console.log('in result');
+        console.log(results.code);
         if(err){
-            console.log(err);
-        }
+            throw err;
 
-        else{
-            res.contentType(mime.lookup("/home/kimtani90/PersonalDocs/AboutMe.odt"));
-            console.log(data)
-            res.send(data);
         }
+        else {
+            if (results.code == 200) {
 
+                fs.writeFile(tempfilepath, new Buffer(results.value.file , 'base64'), function (err) {
+                    if (err)
+                        console.log(err);
+                    else {
+                        console.log('File created');
+
+                        var file = path.join(__dirname, '..') + tempfilepath.substring(1);
+
+
+                        res.download(file, function(err) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log("hello", tempfilepath)
+                                fs.unlink(tempfilepath);
+                            }
+                        })
+                    }
+                });
+
+            }
+        }
     });
-    // res.download(filedata.filepath, filedata.filename);
-
-
 });
 
 
@@ -217,6 +235,35 @@ router.post('/sharefile', function (req, res) {
             }
             else {
                 res.send({status: 401, email:results.value.shareEmail});
+
+            }
+        }
+    });
+
+});
+
+
+
+router.post('/sharefileingroup', function (req, res) {
+
+
+    kafka.make_request('sharefileingroup',{"email":req.session.email, "data": req.body}, function(err,results){
+
+        console.log('in result');
+        console.log(results);
+        if(err){
+            res.send({status: 401, group:results.value.group});
+
+        }
+        else
+        {
+            if(results.code == 200){
+
+                res.send({"status": 201, "sharedcount":results.value.sharedcount});
+
+            }
+            else {
+                res.send({status: 401, group:results.value.group});
 
             }
         }

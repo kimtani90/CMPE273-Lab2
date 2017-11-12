@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Row,Col,ListGroupItem} from 'react-bootstrap';
 import Modal from 'react-modal';
+
 import '../FileUpload.css';
 import * as API from '../api/API';
 import { Route, withRouter } from 'react-router-dom';
@@ -16,7 +17,7 @@ class FileGridList extends Component {
 
 
 
-    state = { index:'', isModalOpen: false, shareEmail:'', file:'' , group:[], downloadLink:''}
+    state = { index:'', isModalOpen: false, shareEmail:'', file:'' , group:'', downloadLink:''}
 
     openModal(index, file, downloadLink) {
         this.setState({ index:index, isModalOpen: true , file: file, downloadLink:downloadLink, showLink:false})
@@ -24,11 +25,19 @@ class FileGridList extends Component {
 
     closeModal(data) {
 
+        if(data!=""){
 
-        {data!=""?
+            if(data.shareEmail!=""){
 
-            ( data.shareEmail!=""?this.props.sharefile(data):'')
-            :''}
+                this.props.sharefile(data)
+            }
+
+            if(data.group!=""){
+
+                this.props.sharefileingroup(data)
+            }
+        }
+
         this.setState({ isModalOpen: false, showLink: true })
     }
 
@@ -67,6 +76,8 @@ class FileGridList extends Component {
         }
     };
 
+
+
     render(){
 
 
@@ -91,7 +102,7 @@ class FileGridList extends Component {
 
 
                       //  if(file.fileparent==this.props.parentFile || (file.isfile=='T' && file.owner!= this.props.userEmail )) {
-                            var downloadlink="abc"//http://localhost:3001/uploads/"+this.props.userEmail.split('.')[0]+"/"+file.filename
+                            var downloadlink= 'http://localhost:3001/files?filepath='
                             return (
                                 <tr className="justify-content-md-center">
 
@@ -123,17 +134,19 @@ class FileGridList extends Component {
                                         </div>
                                     </td>
                                     <td>
-
-                                        {file.isfile == 'F' ?
-
-                                            <a href="#" className="link-title "
+                                        {file.isfile=='F'?
+                                        <a href="#" className="link-title "
                                                onClick={() => this.props.openFileFolder(file)}>
                                                 {file.filename}
-                                            </a>
-                                            :
-                                            <a href={downloadlink} className="link-title "> {file.filename}</a>
+                                        </a>
+                                        :
+                                        <a href={downloadlink+file.filepath} className="link-title "
+                                          >
+                                            {file.filename}
+                                        </a>
                                         }
-                                            </td>
+
+                                    </td>
                                     <td>
                                         {file.sharedcount===0?
                                             <div>Only You</div>:
@@ -169,9 +182,9 @@ class FileGridList extends Component {
                     <ListGroupItem>
 
                         <Row className="show-grid">
-                            <Col md={4}>Share With Email:</Col>
+                            <Col md={3}>Email:</Col>
 
-                            <Col md={8}>
+                            <Col md={9}>
                                 <input type="text" className="form-control" required="true" autoFocus placeholder="Enter semi-colon separated emails"
                                        onChange={(event) => {
                                            this.setState({
@@ -181,12 +194,26 @@ class FileGridList extends Component {
                             </Col>
 
                         </Row>
+                        <br/>
                         <Row className="show-grid">
-                            <Col md={8}>
+                            <Col md={3}>Group:</Col>
+
+                            <Col md={9}>
+                                <input type="text" className="form-control" required="true" autoFocus placeholder="Enter Group"
+                                       onChange={(event) => {
+                                           this.setState({
+                                               group: event.target.value
+                                           });
+                                       }}/>
+                            </Col>
+
+                        </Row>
+                        <Row className="show-grid">
+                            <Col md={7}>
 
                             </Col>
 
-                            <Col md={4}>
+                            <Col md={5}>
 
                                 <a href="#" className="link-title "
                                    onClick={() => this.generateLink()}>

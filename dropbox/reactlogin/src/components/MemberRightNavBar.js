@@ -71,7 +71,7 @@ class MemberRightNavBar extends Component {
                 <hr/>
 
                 <button className="btn btn-primary btn-block" type="submit"
-                        onClick={() => this.props.history.push("/groups")}>
+                        onClick={() => this.props.navigatetogroups()}>
                     Groups
                 </button>
                 <br/>
@@ -118,17 +118,6 @@ class MemberRightNavBar extends Component {
 
 }
 
-
-
-
-/*
-function mapStateToProps(reducerdata) {
-    console.log(reducerdata);
-    const groupdata = reducerdata.groupreducer;
-    console.log(groupdata)
-    return {groupdata};
-}
-*/
 
 function mapDispatchToProps(dispatch) {
     return {

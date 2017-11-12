@@ -42,9 +42,13 @@ export const createUser = (payload) =>
 
 
 
-export const getFile = (filedata) =>
-    fetch(`${api}/files?filedata=`+JSON.stringify(filedata))
-        .then(res => res.status)
+export const getFile = (filepath) =>
+
+    fetch(`${api}/files?filepath=`+filepath,{
+        method: 'GET',
+        credentials:'include'
+    })
+        //.then(res => res)
         .catch(error => {
             console.log("This is error.");
             return error;
@@ -232,6 +236,23 @@ export const updateUser = (data) =>
 
 export const shareFile = (filedata) =>
     fetch(`${api}/files/sharefile`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(filedata),
+        credentials:'include'
+    }).then(res => {
+        return res.json();
+    }).catch(error => {
+        console.log("This is error");
+        return error;
+    });
+
+
+export const shareFileInGroup = (filedata) =>
+    fetch(`${api}/files/sharefileingroup`, {
         method: 'POST',
         headers: {
             ...headers,

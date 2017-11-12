@@ -6,6 +6,7 @@ var UserLog = require('../models/UserLog');
 var fs = require('fs');
 var User = require('../models/User');
 var File = require('../models/Files');
+var Group = require('../models/Groups');
 var UserLog = require('../models/UserLog');
 
 function fileUpload(msg, callback) {
@@ -113,6 +114,30 @@ function getFiles(msg, callback) {
             callback(null, res);
         }
 
+    });
+}
+
+
+
+function downloadFile(msg, callback) {
+
+
+    var res = {}
+    var filepath=msg.filepath;
+
+
+    fs.readFile(filepath, function(err, buf) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+
+            var buffer = buf.toString('base64');
+            res.code = "200";
+            res.value = {'file':buffer}
+            callback(null, res);
+
+        }
     });
 }
 
@@ -358,7 +383,83 @@ function shareFile(msg, callback) {
 
 }
 
+
+function shareFileInGroup(msg, callback) {
+
+
+console.log("Message............")
+    console.log(msg)
+    var res={}
+    var userEmail=msg.email;
+    var group= msg.data.group;
+
+    var file=msg.data.file;
+    var count = file.sharedcount;
+    var filename = file.filename;
+    var filepath = file.filepath;
+    var fileparent = file.fileparent;
+    var isfile = file.isfile;
+
+    var log={
+        'filename':filename,
+        'filepath':filepath,
+        'isfile':isfile=='T'?"File":"Folder",
+        'action':'Share File with group '+group,
+        'actiontime': new Date()
+    };
+
+
+    Group.findOne( {'groupname': group, 'owner': userEmail}, function (err, groupData) {
+
+        if (err) {
+            throw err;
+        }
+
+        if(!group){
+            res.code = "401";
+            callback(null, res);
+        }
+        else {
+
+            var membersArr = groupData.members;
+
+            for(var i=0; i<membersArr.length; i++){
+
+                count+=1;
+                File.update({'filepath':filepath}, { $set:{sharedcount:count+1}, $push: {sharedlist: membersArr[0].email}}, function(err){
+
+                    if(err){
+                        throw err;
+
+                        res.code = "401";
+                        res.value = {"group":group}
+                        callback(null, res);
+                    }
+
+                });
+            }
+
+            UserLog.update({'user': userEmail}, {$push: {filelog:log}}, function (err) {
+                if (err) {
+                    throw err;
+                    console.log("Error inserting last login....")
+                }
+                else {
+
+                    res.code = "200";
+                    res.value = {"sharedcount":count}
+                    callback(null, res);
+
+                }
+            });
+        }
+    });
+
+}
+
 exports.markUnmarkStar=markUnmarkStar;
+exports.downloadFile=downloadFile;
+exports.shareFileInGroup=shareFileInGroup;
 exports.shareFile=shareFile;
 exports.makeFolder=makeFolder;
 exports.fileDelete=fileDelete;
