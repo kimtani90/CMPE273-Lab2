@@ -15,7 +15,7 @@ function getGroups(msg, callback) {
     var res = {}
 
     var groups = []
-    Group.find({$or: [{'owner': msg.email}, {'members': msg.email}]}, function (err, groupsArr) {
+    Group.find({$or: [{'owner': msg.email}, {'members.email': msg.email}]}, function (err, groupsArr) {
 
         if (err) {
             throw err;
@@ -37,7 +37,7 @@ function getGroups(msg, callback) {
 }
 
 function deleteGroup(msg, callback) {
-    console.log("in file upload kafka")
+
 
     var res = {}
 
@@ -76,7 +76,7 @@ function deleteGroup(msg, callback) {
 
 
 function addGroup(msg, callback) {
-    console.log("in file upload kafka")
+
 
     var res = {}
 
@@ -114,7 +114,7 @@ function addGroup(msg, callback) {
         }
 
         else {
-            console.log("Group exists..Successsss")
+
             newgroup.save(function (err) {
 
                 if (err) {
@@ -173,7 +173,7 @@ function getMembers(msg, callback) {
 
 
 function deleteMember(msg, callback) {
-    console.log("in file upload kafka")
+
 
     var res = {}
 
@@ -216,7 +216,7 @@ function deleteMember(msg, callback) {
 
 
 function addMember(msg, callback) {
-    console.log("in file upload kafka")
+
 
     var res = {}
 

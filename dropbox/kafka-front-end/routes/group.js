@@ -12,10 +12,8 @@ router.get('/getgroups', function (req, res) {
     var email=req.session.email;
 
 
-    kafka.make_request('getgroups',{"email":email}, function(err,results){
+    kafka.make_request('getgroups',{"email":email }, function(err,results){
 
-        console.log('in result');
-        console.log(results);
         if(err){
             res.send({status: 401});
 
@@ -42,9 +40,9 @@ router.post('/deletegroup', function (req, res) {
 
 
     kafka.make_request('deletegroup',{"groupname":groupname, "owner":owner}, function(err,results){
-
+/*
         console.log('in result');
-        console.log(results);
+        console.log(results);*/
         if(err){
             res.send({status: 401, message: "Error deleting group!"});
 
@@ -65,14 +63,14 @@ router.post('/deletegroup', function (req, res) {
 
 router.post('/addgroup', function (req, res) {
 
+
     var groupname = req.body.groupname;
 
     var email = req.session.email;
 
+
     kafka.make_request('addgroup',{"groupname":groupname, "email":email}, function(err,results){
 
-        console.log('in result');
-        console.log(results);
         if(err){
             res.send({status: 401, message: "Error deleting group!"});
 
@@ -105,8 +103,6 @@ router.post('/getmembers', function (req, res) {
 
     kafka.make_request('getmembers',{"groupname":groupname, "email":email, "owner":owner}, function(err,results){
 
-        console.log('in result');
-        console.log(results);
         if(err){
             res.send({status: 401});
 
@@ -134,11 +130,9 @@ router.post('/deletemember', function (req, res) {
     var member = req.body.email;
     var owner = req.body.owner;
 
-    console.log(groupname,member, owner)
+
     kafka.make_request('deletemember',{"groupname":groupname, "member":member, "owner":owner}, function(err,results){
 
-        console.log('in result');
-        console.log(results);
         if(err){
             res.send({status: 401, message:results.value});
 
@@ -159,12 +153,9 @@ router.post('/deletemember', function (req, res) {
 
 router.post('/addmember', function (req, res) {
 
-console.log(req.body);
 
     kafka.make_request('addmember',{"data":req.body, "owner":req.session.email}, function(err,results){
 
-        console.log('in result');
-        console.log(results);
         if(err){
             res.send({status: 401, message:results.value});
 

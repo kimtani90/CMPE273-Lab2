@@ -2,6 +2,7 @@ var mongoose     = require('mongoose');
 mongoose.Promise = require('bluebird');
 var Schema       = mongoose.Schema;
 
+
 var options = {
     useMongoClient: true,
     autoIndex: false, // Don't build indexes
@@ -13,6 +14,7 @@ var options = {
 };
 
 mongoose.connect('mongodb://localhost:27017/cmpe273', options); // connect to our database
+
 
 
 var UserSchema   = new Schema({

@@ -26,9 +26,9 @@ class ListGroup extends Component {
             console.log(res)
                 if (res.status == 201) {
                     this.props.getGroups(res.groups);
-                    console.log(res.groups)
+
                     this.setState({ message: res.message })
-                    console.log("Success...")
+
 
                 }else if (res.status == 401) {
 

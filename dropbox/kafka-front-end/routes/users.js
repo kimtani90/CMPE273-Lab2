@@ -36,7 +36,7 @@ router.get('/', function (req, res) {
 });
 
 router.post('/', function (req, res) {
-
+    console.log(req.body)
     var reqEmail = req.body.email;
     var reqPassword = req.body.password;
 
@@ -66,7 +66,7 @@ router.post('/', function (req, res) {
 
 router.post('/signup', function (req, res) {
 
-
+console.log(req.body);
     kafka.make_request('signup',{"user":req.body}, function(err,results){
 
         console.log('in result');

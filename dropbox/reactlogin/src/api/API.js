@@ -43,7 +43,6 @@ export const createUser = (payload) =>
 
 
 export const getFile = (filepath) =>
-
     fetch(`${api}/files?filepath=`+filepath,{
         method: 'GET',
         credentials:'include'

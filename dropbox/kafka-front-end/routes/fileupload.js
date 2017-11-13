@@ -35,7 +35,7 @@ router.get('/',  function (req, res) {
     console.log(req.query.filepath);
     var filepath=req.query.filepath;
     var tempfilepath='./public/uploads/'+filepath.split('/')[filepath.split('/').length-1]
-console.log(tempfilepath)
+
     kafka.make_request('downloadfile',{"filepath": filepath}, function(err,results){
 
         console.log('in result');
@@ -101,7 +101,7 @@ router.get('/getfiles', function (req, res) {
 
 
 router.post('/delete', function (req, res) {
-
+console.log(req.body);
 
     kafka.make_request('deletefile',{"email":req.session.email, "filedata": req.body}, function(err,results){
 
@@ -165,7 +165,7 @@ router.post('/upload', upload.single('file'), function (req, res) {
 
 
 router.post('/makefolder', function (req, res) {
-
+console.log(req.body)
     kafka.make_request('makefolder',{"email":req.session.email, "folderdata": req.body}, function(err,results){
 
         console.log('in result');
@@ -217,7 +217,7 @@ router.post('/star', function (req, res) {
 
 router.post('/sharefile', function (req, res) {
 
-
+console.log(req.body);
     kafka.make_request('sharefile',{"email":req.session.email, "data": req.body}, function(err,results){
 
         console.log('in result');

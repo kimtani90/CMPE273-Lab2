@@ -9,9 +9,6 @@ var UserLog = require('../models/UserLog');
 function login(msg, callback){
 
     var res = {};
-    console.log("In handle request:"+ JSON.stringify(msg));
-
-
     var email=msg.email;
     var password=msg.password;
 
@@ -50,7 +47,6 @@ function login(msg, callback){
 
 function getUserDetails(msg, callback){
 
-    console.log(msg)
     var res={}
     var email=msg.email;
     var userdetails={

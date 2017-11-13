@@ -7,7 +7,7 @@ import {GET_GROUPLOG} from "../actions/index";
 const initialState = {
 
     filelog:[],
-    groupLog:[]
+    grouplog:[]
 
 };
 

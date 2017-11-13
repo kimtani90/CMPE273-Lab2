@@ -8,6 +8,7 @@ var User = require('../models/User');
 var File = require('../models/Files');
 var Group = require('../models/Groups');
 var UserLog = require('../models/UserLog');
+var rimraf = require('rimraf');
 
 function fileUpload(msg, callback) {
 console.log("in file upload kafka")
@@ -42,7 +43,8 @@ var res={}
         newfile.fileparent = fileparent,
         newfile.isfile = isfile,
         newfile.owner = msg.email,
-        newfile.sharedcount = 0
+        newfile.sharedcount = 0,
+        newfile.starred = false
 
 
     var log={
@@ -176,7 +178,10 @@ function fileDelete(msg, callback) {
     var filename = msg.filedata.filename;
     var isfile = msg.filedata.isfile;
     var filepath= msg.filedata.filepath;
+    var count = msg.filedata.sharedcount;
+    var owner = msg.filedata.owner;
     var email=msg.email;
+
 console.log(msg);
     var log={
         'filename':filename,
@@ -199,7 +204,8 @@ console.log(msg);
 
             if (isfile == 'F') {
                 try {
-                    fs.rmdirSync(filepath)
+
+                    rimraf.sync(filepath)
                 }
                 catch (err) {
 
@@ -246,9 +252,34 @@ console.log(msg);
         }
 
         else{
-            res.code = "401";
-            res.value = "You need admin rights to delete the file/folder!"
-            callback(null, res);
+
+            File.update({'filepath':filepath}, { $set:{sharedcount:count-1}, $pull: {sharedlist: email}}, function(err){
+
+                if(err){
+                    throw err;
+                    res.code = "401";
+                    res.value = "Error deleting file!";
+                    callback(null, res);
+                }
+                else{
+                    UserLog.update({'user': email}, {$push: {filelog:log}}, function (err) {
+                        if (err) {
+                            throw err;
+
+                        }
+                        else {
+                            console.log("Success")
+
+                            res.code = "200";
+                            res.value = "File Deleted Successfully!";
+                            callback(null, res);
+                        }
+
+                    });
+
+                }
+
+            });
         }
     });
 
@@ -387,8 +418,6 @@ function shareFile(msg, callback) {
 function shareFileInGroup(msg, callback) {
 
 
-console.log("Message............")
-    console.log(msg)
     var res={}
     var userEmail=msg.email;
     var group= msg.data.group;

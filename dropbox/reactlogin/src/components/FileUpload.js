@@ -118,6 +118,10 @@ class FileUpload extends Component {
 
     sharefile=(filedata) => {
 
+        this.setState({
+
+            message: ''
+        });
 
         var emailList=filedata.shareEmail.trim().split(';');
 
@@ -154,16 +158,15 @@ class FileUpload extends Component {
 
     sharefileingroup=(data) => {
 
-console.log(data);
         API.shareFileInGroup(data)
             .then((res) => {
-console.log(res)
+
                 if (res.status == 201) {
 
                     this.props.sharedCount(data.index, res.sharedcount);
                     this.setState({
 
-                        message: this.state.message+" File Shared with "+data.group+" group!"
+                        message: " File Shared with "+data.group+" group!"
                     });
                     console.log("Success...")
 

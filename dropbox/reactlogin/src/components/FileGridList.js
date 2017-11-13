@@ -102,7 +102,7 @@ class FileGridList extends Component {
 
 
                       //  if(file.fileparent==this.props.parentFile || (file.isfile=='T' && file.owner!= this.props.userEmail )) {
-                            var downloadlink= 'http://localhost:3001/files?filepath='
+                            var downloadlink= 'http://localhost:3001/files?filepath='+file.filepath
                             return (
                                 <tr className="justify-content-md-center">
 
@@ -140,7 +140,7 @@ class FileGridList extends Component {
                                                 {file.filename}
                                         </a>
                                         :
-                                        <a href={downloadlink+file.filepath} className="link-title "
+                                        <a href={downloadlink} className="link-title "
                                           >
                                             {file.filename}
                                         </a>

@@ -114,32 +114,13 @@ console.log(this.props.userlogdata.filelog)
                                 data={this.props.userlogdata.grouplog}
                                 columns={[
                                     {
-                                        Header: "File Name",
+                                        Header: "Group Name",
                                         columns: [
                                             {
-                                                accessor: "filename"
+                                                accessor: "groupname"
                                             }
                                         ]
                                     },
-
-                                    /*{
-                                        Header: "File Path",
-                                        columns: [
-                                            {
-                                                accessor: "filepath"
-                                            }
-                                        ]
-                                    },*/
-
-                                    {
-                                        Header: "File Type",
-                                        columns: [
-                                            {
-                                                accessor: "isfile"
-                                            }
-                                        ]
-                                    },
-
                                     {
                                         Header: "Activity",
                                         columns: [
